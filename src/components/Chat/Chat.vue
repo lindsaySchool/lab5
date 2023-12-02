@@ -4,20 +4,27 @@
     //ref -> iets reflecteren naar de frontend
     let message =ref("");//int, string, boolean
     let allMessages = reactive({
-        data: ["message 1", "message 2", "message 3"],
+        data: [],
     });//array, object
 
-    //function sendMessage
-    const sendMessage = () => {
-        allMessages.data.push(message.value);
-        message.value = "";
-    }
+    const fetchMessages = async () => {
+        try {
+            const response = await fetch('https://lab5-messages-api-with-mongodb.onrender.com/api/v1/messages');
+            const data = await response.json();
+            console.log(data)
+            allMessages.data = data.data.message;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    onMounted(fetchMessages);
 </script>
 
 <template>
   <div>
     <ul>
-        <li v-for="m in allMessages.data">{{ m }}</li>
+        <li v-for="m in allMessages.data" :key="m._id">{{ m }}</li>
     </ul>
   </div>
   <div>
