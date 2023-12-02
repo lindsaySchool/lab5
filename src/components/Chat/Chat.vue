@@ -11,8 +11,26 @@
         try {
             const response = await fetch('https://lab5-messages-api-with-mongodb.onrender.com/api/v1/messages');
             const data = await response.json();
-            console.log(data)
             allMessages.data = data.data.message;
+            console.log(allMessages.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    console.log(allMessages.data);
+
+    const sendMessage = async () => {
+        try {
+            const response = await fetch('https://lab5-messages-api-with-mongodb.onrender.com/api/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: message.value }),
+            });
+            const data = await response.json();
+            allMessages.data.push(data.data.message.text);
+            message.value = "";
         } catch (error) {
             console.log(error);
         }
@@ -24,7 +42,7 @@
 <template>
   <div>
     <ul>
-        <li v-for="m in allMessages.data" :key="m._id">{{ m }}</li>
+        <li v-for="message in allMessages.data" :key="message._id">{{ message }}</li>
     </ul>
   </div>
   <div>
