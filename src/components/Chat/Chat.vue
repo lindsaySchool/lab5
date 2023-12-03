@@ -11,13 +11,12 @@
         try {
             const response = await fetch('https://lab5-messages-api-with-mongodb.onrender.com/api/v1/messages');
             const data = await response.json();
+            console.log(data);
             allMessages.data = data.data.message;
-            console.log(allMessages.data);
         } catch (error) {
             console.log(error);
         }
     };
-    console.log(allMessages.data);
 
     const sendMessage = async () => {
         try {
@@ -26,23 +25,24 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ text: message.value }),
+                body: JSON.stringify({ text: message.value, user: 'you' }),
             });
             const data = await response.json();
-            allMessages.data.push(data.data.message.text);
+            allMessages.data.unshift(data.data.message.text, data.data.message.user);
             message.value = "";
         } catch (error) {
             console.log(error);
         }
     };
-
     onMounted(fetchMessages);
 </script>
 
 <template>
   <div>
     <ul>
-        <li v-for="message in allMessages.data" :key="message._id">{{ message }}</li>
+        <li v-for="message in allMessages.data" :key="message._id">
+            <span>{{ message.user }}</span>
+            {{ message }}</li>
     </ul>
   </div>
   <div>
