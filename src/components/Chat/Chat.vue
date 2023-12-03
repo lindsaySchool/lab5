@@ -11,8 +11,9 @@
         try {
             const response = await fetch('https://lab5-messages-api-with-mongodb.onrender.com/api/v1/messages');
             const data = await response.json();
-            console.log(data);
-            allMessages.data = data.data.message;
+            console.log(data.data);
+            // Stel allMessages.data in op een array van objecten met eigenschappen text en user
+            allMessages.data = data.data.message.map(message => ({ text: message.text, user: message.user }));
         } catch (error) {
             console.log(error);
         }
@@ -28,7 +29,7 @@
                 body: JSON.stringify({ text: message.value, user: 'you' }),
             });
             const data = await response.json();
-            allMessages.data.unshift(data.data.message.text, data.data.message.user);
+            allMessages.data.unshift({ text: data.data.message.text, user: data.data.message.user });
             message.value = "";
         } catch (error) {
             console.log(error);
@@ -39,10 +40,10 @@
 
 <template>
   <div>
-    <ul>
-        <li v-for="message in allMessages.data" :key="message._id">
+    <ul class="comment-section">
+        <li v-for="message in allMessages.data" :key="message._id" class="comment">
             <span>{{ message.user }}</span>
-            {{ message }}</li>
+            {{ message.text }}</li>
     </ul>
   </div>
   <div>
@@ -52,5 +53,40 @@
 </template>
 
 <style scoped>
+  .comment-section {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 20px;
+  }
 
+  .comment {
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    list-style: none;
+  }
+
+  .comment span {
+    font-weight: bold;
+    margin-right: 8px;
+  }
+
+  input {
+    padding: 8px;
+    margin: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  button {
+    background: #007bff;
+    color: white;
+    border-radius: 4px;
+    padding: 8px 12px;
+    border: none;
+    margin: 8px;
+    cursor: pointer;
+  }
 </style>
