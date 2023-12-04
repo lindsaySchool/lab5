@@ -29,7 +29,7 @@
                 body: JSON.stringify({ text: message.value, user: 'you' }),
             });
             const data = await response.json();
-            allMessages.data.unshift({ text: data.data.message.text, user: data.data.message.user });
+            allMessages.data.push({ text: data.data.message.text, user: data.data.message.user });
             message.value = "";
         } catch (error) {
             console.log(error);
@@ -41,7 +41,7 @@
 <template>
   <div>
     <ul class="comment-section">
-        <li v-for="message in allMessages.data" :key="message._id" class="comment">
+        <li v-for="message in [...allMessages.data].reverse()" :key="message._id" class="comment">
             <span>{{ message.user }}</span>
             {{ message.text }}</li>
     </ul>
